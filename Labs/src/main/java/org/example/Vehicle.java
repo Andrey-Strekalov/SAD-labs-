@@ -2,10 +2,8 @@ package org.example;
 
 enum VehicleStatus { AVAILABLE, BUSY, MAINTENANCE }
 
-
-// Уровень 1
 abstract class Vehicle {
-    private String licensePlate;
+    private final String licensePlate;   // ← final: ключ в Map
     private String brand;
     private String color;
     private VehicleStatus status;
@@ -17,16 +15,36 @@ abstract class Vehicle {
         this.status = VehicleStatus.AVAILABLE;
     }
 
-    public String getLicensePlate() { return licensePlate; }
-    public void setLicensePlate(String licensePlate) { this.licensePlate = licensePlate; }
-    public String getBrand() { return brand; }
-    public void setBrand(String brand) { this.brand = brand; }
-    public String getColor() { return color; }
-    public void setColor(String color) { this.color = color; }
-    public VehicleStatus getStatus() { return status; }
-    public void setStatus(VehicleStatus status) { this.status = status; }
+    // ===== Инкапсулированные переходы состояния =====
+    public void occupy() {
+        if (status != VehicleStatus.AVAILABLE)
+            throw new IllegalStateException("Машина недоступна: " + status);
+        status = VehicleStatus.BUSY;
+    }
 
-    // Абстрактные методы — полиморфизм
+    public void release() {
+        if (status != VehicleStatus.BUSY)
+            throw new IllegalStateException("Машина не занята: " + status);
+        status = VehicleStatus.AVAILABLE;
+    }
+
+    public void sendToMaintenance() {
+        if (status == VehicleStatus.BUSY)
+            throw new IllegalStateException("Нельзя отправить на ТО занятую машину");
+        status = VehicleStatus.MAINTENANCE;
+    }
+
+    // ===== Геттеры =====
+    public String getLicensePlate() { return licensePlate; }
+    public String getBrand() { return brand; }
+    public String getColor() { return color; }
+    public VehicleStatus getStatus() { return status; }
+
+    // ===== Сеттеры для НЕключевых полей (безопасны) =====
+    public void setBrand(String brand) { this.brand = brand; }
+    public void setColor(String color) { this.color = color; }
+
+    // ===== Абстрактные методы =====
     public abstract double getBaseRate();
     public abstract String getVehicleType();
 

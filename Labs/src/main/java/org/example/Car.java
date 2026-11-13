@@ -1,10 +1,9 @@
 package org.example;
 
-enum CarClass { ECONOMY, COMFORT, BUSINESS}
+enum CarClass { ECONOMY, COMFORT, BUSINESS }
 
 public abstract class Car extends Vehicle {
-
-    private CarClass carClass;
+    private final CarClass carClass;   // ← final
 
     public Car(String licensePlate, String brand, String color, CarClass carClass) {
         super(licensePlate, brand, color);
@@ -12,10 +11,9 @@ public abstract class Car extends Vehicle {
     }
 
     public CarClass getCarClass() { return carClass; }
-    public void setCarClass(CarClass carClass) { this.carClass = carClass; }
+    // setCarClass УДАЛЁН
 
     public double calculateCost(double distanceKm) {
         return getBaseRate() * distanceKm;
     }
-
 }

@@ -13,8 +13,18 @@ class Driver extends Person {
 
     public double getRating() { return rating; }
     public Ride getCurrentRide() { return currentRide; }
-    public void setCurrentRide(Ride currentRide) { this.currentRide = currentRide; }
     public boolean isAvailable() { return currentRide == null; }
+
+    // ===== Инкапсулированные переходы =====
+    public void assignRide(Ride ride) {
+        if (currentRide != null)
+            throw new IllegalStateException("Водитель уже занят");
+        this.currentRide = ride;
+    }
+
+    public void free() {
+        this.currentRide = null;
+    }
 
     public void addRating(double newRating) throws InvalidRatingException {
         if (newRating < 1 || newRating > 5)
